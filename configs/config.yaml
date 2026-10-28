@@ -1,0 +1,42 @@
+# Конфигурация SpaceMetrics AI MVP
+
+capture:
+  source: "data/benchmarks/pedestrians_cctv_long.mp4"  # Путь к видеофайлу, RTSP-поток или индекс USB-камеры (0)
+  target_fps: 30
+  width: 1280
+  height: 720
+  loop_video: true
+
+inference:
+  backend: "yolo"                  # "yolo" (Dev/PoC: Ultralytics/ONNX) или "hailo" (Stage II: UGen300 .hef)
+  model_path: "yolov8n.pt"         # Путь к весам (.pt, .onnx или .hef)
+  conf_threshold: 0.35
+  iou_threshold: 0.45
+  person_class_id: 0
+
+tracking:
+  track_Activation_threshold: 0.25
+  lost_track_buffer: 30
+  minimum_matching_threshold: 0.8
+  frame_rate: 30
+
+geometry:
+  floor_width_meters: 12.0         # Физическая ширина зала (м)
+  floor_height_meters: 10.0        # Физическая длина зала (м)
+
+analytics:
+  heatmap:
+    grid_width: 60                 # Разрешение сетки по X (ячеек)
+    grid_height: 50                # Разрешение сетки по Y (ячеек)
+    footprint_radius_m: 0.45       # Физический радиус следа человека (м)
+    decay_half_life_sec: 0.0       # Период полураспада тепла (сек), 0 = накопительный режим
+    colormap: "TURBO"              # Цветовая шкала: TURBO, JET, INFERNO
+  dwell_time:
+    default_threshold_sec: 3.0     # Порог фиксации задержки у витрины (сек)
+  queue:
+    default_alert_threshold: 3     # Порог очереди у кассы (кол-во человек)
+
+api:
+  host: "127.0.0.1"
+  port: 8000
+  ws_broadcast_interval_sec: 0.2
